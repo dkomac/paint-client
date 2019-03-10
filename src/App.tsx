@@ -7,6 +7,7 @@ import logo from './logo.svg';
 
 // pages
 import Lobby from './pages/Lobby';
+import Room from './pages/Room/Room';
 
 class App extends React.Component {
 	render() {
@@ -20,6 +21,7 @@ class App extends React.Component {
 					</header>
 					<div>
 						<Route exact path="/lobby" component={Lobby} />
+						<Route exact path="/room" component={Room} />
 					</div>
 				</div>
 			</Router>

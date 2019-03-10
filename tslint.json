@@ -5,7 +5,8 @@
 		"ordered-imports": false,
 		"jsx-boolean-value": false,
 		"no-console": false,
-		"member-access": [true, "no-public"]
+		"member-access": [true, "no-public"],
+		"jsx-no-lambda": [false]
 	},
 	"linterOptions": {
 		"exclude": [
