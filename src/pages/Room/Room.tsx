@@ -5,26 +5,70 @@ import Whiteboard from './../../components/Whiteboard';
 import './Room.css';
 
 interface IRoom {
-	x: number;
-	y: number;
-	onMouseMove(event: React.MouseEvent<HTMLDivElement>): void;
+	// x: number;
+	// y: number;
+	props: any;
+	state: any;
+	// onMouseMove(event: React.MouseEvent<HTMLDivElement>): void;
 }
 
-class Room extends React.Component<IRoom> {
-	constructor(props: any) {
-		super(props);
-		this.getMousePosition = this.getMousePosition.bind(this);
-	}
+interface IState {
+	mouseDown: boolean;
+	paintData: IpaintCord[];
+}
 
+interface IpaintCord {
+	x: number;
+	y: number;
+	color: string;
+}
+
+class Room extends React.Component<IRoom, IState> {
+	constructor(props: IRoom) {
+		super(props);
+		this.state = {
+			mouseDown: false,
+			paintData: []
+		};
+	}
 	getMousePosition = (e: React.MouseEvent<HTMLElement>): void => {
-		console.log(e, 'sda');
+		const { mouseDown } = this.state;
+
+		if (mouseDown) {
+			const paintCord: IpaintCord = {
+				x: e.clientX,
+				y: e.clientY,
+				color: 'black'
+			};
+			this.setState({
+				paintData: [...this.state.paintData, paintCord]
+			});
+		}
+	};
+
+	onMouseDown = (): void => {
+		this.setState({
+			mouseDown: true
+		});
+	};
+
+	onMouseUp = (): void => {
+		this.setState({
+			mouseDown: false
+		});
 	};
 
 	render() {
+		const { paintData } = this.state;
 		return (
-			<div className="room-container" onMouseMove={this.getMousePosition}>
+			<div
+				className="room-container"
+				onMouseMove={this.getMousePosition}
+				onMouseDown={this.onMouseDown}
+				onMouseUp={this.onMouseUp}
+			>
 				<h1>Room</h1>
-				<Whiteboard />
+				<Whiteboard data={paintData} />
 			</div>
 		);
 	}
