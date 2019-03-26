@@ -2,14 +2,24 @@ import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 import Menu from './components/Menu/Menu';
-
 import logo from './logo.svg';
 
 // pages
 import Lobby from './pages/Lobby';
 import Room from './pages/Room/Room';
 
-class App extends React.Component {
+const ROUTES: Array<{ path: string; component: any }> = [
+	{
+		path: '/lobby',
+		component: Lobby
+	},
+	{
+		path: '/room',
+		component: Room
+	}
+];
+
+class App extends React.Component<{ store: any }> {
 	render() {
 		return (
 			<Router>
@@ -20,8 +30,16 @@ class App extends React.Component {
 						<Menu />
 					</header>
 					<div>
-						<Route exact path="/lobby" component={Lobby} />
-						<Route exact path="/room" component={Room} />
+						{ROUTES.map((route) => {
+							return (
+								<Route
+									key={route.path}
+									exact
+									path={route.path}
+									component={route.component}
+								/>
+							);
+						})}
 					</div>
 				</div>
 			</Router>
