@@ -4,20 +4,9 @@ import './App.css';
 import Menu from './components/Menu/Menu';
 import logo from './logo.svg';
 
-// pages
-import Lobby from './pages/Lobby';
-import Room from './pages/Room/Room';
+import ROUTES from './routes/routes';
 
-const ROUTES: Array<{ path: string; component: any }> = [
-	{
-		path: '/lobby',
-		component: Lobby
-	},
-	{
-		path: '/room',
-		component: Room
-	}
-];
+import { IRoute } from './routes/iroutes.interface';
 
 class App extends React.Component<{ store: any }> {
 	render() {
@@ -27,10 +16,10 @@ class App extends React.Component<{ store: any }> {
 					<header className="App-header">
 						<img src={logo} className="App-logo" alt="logo" />
 						<h1 className="App-title">Welcome to React</h1>
-						<Menu />
+						<Menu routes={ROUTES} />
 					</header>
 					<div>
-						{ROUTES.map((route) => {
+						{ROUTES.map((route: IRoute) => {
 							return (
 								<Route
 									key={route.path}

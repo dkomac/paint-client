@@ -1,24 +1,18 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-const Menu = () => {
+import { IRoute } from './../../routes/iroutes.interface';
+
+const Menu: React.SFC<any> = ({ routes }) => {
 	return (
 		<div>
-			<Link to="/">
-				<button>home</button>
-			</Link>
-			<Link to="/lobby">
-				<button>lobby</button>
-			</Link>
-			<Link to="/room">
-				<button>Room</button>
-			</Link>
-			<Link to="/contact">
-				<button>contact</button>
-			</Link>
-			<Link to="/info">
-				<button>info</button>
-			</Link>
+			{routes.map((route: IRoute) => {
+				return (
+					<Link key={route.path} to={route.path}>
+						<button>{route.label}</button>
+					</Link>
+				);
+			})}
 		</div>
 	);
 };
