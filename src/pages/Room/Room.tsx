@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import Whiteboard from './../../components/Whiteboard';
+import { SocketManager } from './../../socket/SocketManager';
 
 import './Room.css';
 
@@ -15,6 +16,7 @@ interface IRoom {
 interface IState {
 	mouseDown: boolean;
 	paintData: IpaintCord[];
+	settings: { size: number; color: string };
 }
 
 interface IpaintCord {
@@ -23,23 +25,44 @@ interface IpaintCord {
 	color: string;
 }
 
+const POSITION_DATA: string = 'POSITION_DATA';
+const DRAWING_STATUS: string = 'DRAWING_STATUS';
+
 class Room extends React.Component<IRoom, IState> {
+	private socketManager = new SocketManager();
+
 	constructor(props: IRoom) {
 		super(props);
 		this.state = {
 			mouseDown: false,
-			paintData: []
+			paintData: [],
+			settings: {
+				size: 10,
+				color: 'blue'
+			}
 		};
+
+		this.socketManager.socketConnect();
+		this.socketManager.socketListen((data: any[]) => {
+			this.setState({
+				paintData: data
+			});
+		});
 	}
 	getMousePosition = (e: React.MouseEvent<HTMLElement>): void => {
-		const { mouseDown } = this.state;
+		const { mouseDown, settings } = this.state;
 
 		if (mouseDown) {
 			const paintCord: IpaintCord = {
 				x: e.clientX,
 				y: e.clientY,
-				color: 'black'
+				...settings
 			};
+			this.socketManager.sendMessage({
+				type: POSITION_DATA,
+				payload: paintCord
+			});
+			// currentLine.push(paintCord);
 			this.setState({
 				paintData: [...this.state.paintData, paintCord]
 			});
@@ -47,12 +70,20 @@ class Room extends React.Component<IRoom, IState> {
 	};
 
 	onMouseDown = (): void => {
+		this.socketManager.sendMessage({
+			type: DRAWING_STATUS,
+			payload: { isDrawing: true }
+		});
 		this.setState({
 			mouseDown: true
 		});
 	};
 
 	onMouseUp = (): void => {
+		this.socketManager.sendMessage({
+			type: DRAWING_STATUS,
+			payload: { isDrawing: false }
+		});
 		this.setState({
 			mouseDown: false
 		});
@@ -60,6 +91,7 @@ class Room extends React.Component<IRoom, IState> {
 
 	render() {
 		const { paintData } = this.state;
+		// const { something } = this.socketManager.getData()
 		return (
 			<div
 				className="room-container"

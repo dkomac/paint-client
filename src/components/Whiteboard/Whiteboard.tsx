@@ -4,6 +4,7 @@ interface IpaintCord {
 	x: number;
 	y: number;
 	color?: string;
+	size?: number;
 }
 
 interface IProps {
@@ -46,7 +47,8 @@ class Whiteboard extends React.Component<IProps, IState> {
 					return {
 						x: pos.x - this.canvasRef.current.getBoundingClientRect().left,
 						y: pos.y - this.canvasRef.current.getBoundingClientRect().top,
-						color: pos.color
+						color: pos.color,
+						size: pos.size
 					};
 				}
 			);
@@ -62,10 +64,11 @@ class Whiteboard extends React.Component<IProps, IState> {
 		if (data.length < 1) {
 			return;
 		}
+		// console.log(data.length);
 		let p1 = data[0];
 		let p2 = data[1];
 
-		console.log(p1, p2);
+		// console.log(p1, p2);
 
 		this.ctx.beginPath();
 		this.ctx.moveTo(p1.x, p1.y);
@@ -74,10 +77,10 @@ class Whiteboard extends React.Component<IProps, IState> {
 			const midPoint = this.midPoint(p1, p2);
 			this.ctx.lineCap = 'round';
 			this.ctx.lineJoin = 'round';
-			this.ctx.lineWidth = 5; // data[i].settings.size;
+			this.ctx.lineWidth = data[i].size;
 			this.ctx.shadowBlur = 2;
-			this.ctx.shadowColor = 'green'; // data[i].settings.color;
-			this.ctx.strokeStyle = 'green'; // data[i].settings.color;
+			this.ctx.shadowColor = data[i].color;
+			this.ctx.strokeStyle = data[i].color;
 			this.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
 			p1 = data[i];
 			p2 = data[i + 1];

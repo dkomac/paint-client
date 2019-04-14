@@ -4,9 +4,7 @@ import './App.css';
 import Menu from './components/Menu/Menu';
 import logo from './logo.svg';
 
-import ROUTES from './routes/routes';
-
-import { IRoute } from './routes/iroutes.interface';
+import ROUTES, { IRoute } from './routes/routes';
 
 class App extends React.Component<{ store: any }> {
 	render() {
