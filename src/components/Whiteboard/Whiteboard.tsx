@@ -8,7 +8,7 @@ interface IpaintCord {
 }
 
 interface IProps {
-	data: IpaintCord[];
+	data: IpaintCord[][];
 }
 
 interface IState {
@@ -92,7 +92,9 @@ class Whiteboard extends React.Component<IProps, IState> {
 	render() {
 		const { data } = this.props;
 
-		this.renderCanvas(data);
+		data.forEach((list) => {
+			this.renderCanvas(list);
+		});
 		return (
 			<div>
 				<h1>canvas</h1>

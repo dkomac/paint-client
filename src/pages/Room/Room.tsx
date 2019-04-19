@@ -26,10 +26,12 @@ interface IpaintCord {
 }
 
 const POSITION_DATA: string = 'POSITION_DATA';
-const DRAWING_STATUS: string = 'DRAWING_STATUS';
+// const DRAWING_STATUS: string = 'DRAWING_STATUS';
 
 class Room extends React.Component<IRoom, IState> {
 	private socketManager = new SocketManager();
+	// private paintData: IpaintCord[] = [];
+	private paintMemory: IpaintCord[][] = [];
 
 	constructor(props: IRoom) {
 		super(props);
@@ -44,9 +46,7 @@ class Room extends React.Component<IRoom, IState> {
 
 		this.socketManager.socketConnect();
 		this.socketManager.socketListen((data: any[]) => {
-			this.setState({
-				paintData: data
-			});
+			this.paintMemory = data;
 		});
 	}
 	getMousePosition = (e: React.MouseEvent<HTMLElement>): void => {
@@ -58,39 +58,47 @@ class Room extends React.Component<IRoom, IState> {
 				y: e.clientY,
 				...settings
 			};
+			const lastArray = this.paintMemory[this.paintMemory.length - 1];
+			lastArray.push(paintCord);
+			// this.paintData.push(paintCord);
 			this.socketManager.sendMessage({
 				type: POSITION_DATA,
-				payload: paintCord
+				payload: this.paintMemory
 			});
+			console.log('-- ', this.paintMemory);
 			// currentLine.push(paintCord);
-			this.setState({
+			/* this.setState({
 				paintData: [...this.state.paintData, paintCord]
-			});
+			}); */
 		}
 	};
 
 	onMouseDown = (): void => {
-		this.socketManager.sendMessage({
+		/* this.socketManager.sendMessage({
 			type: DRAWING_STATUS,
 			payload: { isDrawing: true }
-		});
+		}); */
+		this.paintMemory.push([]);
 		this.setState({
 			mouseDown: true
 		});
 	};
 
 	onMouseUp = (): void => {
-		this.socketManager.sendMessage({
+		/* this.socketManager.sendMessage({
 			type: DRAWING_STATUS,
 			payload: { isDrawing: false }
-		});
+		}); */
+
+		// this.paintMemory.push(this.paintData);
+		// this.paintData = [];
 		this.setState({
 			mouseDown: false
 		});
 	};
 
 	render() {
-		const { paintData } = this.state;
+		// const { paintData } = this.state;
 		// const { something } = this.socketManager.getData()
 		return (
 			<div
@@ -100,7 +108,7 @@ class Room extends React.Component<IRoom, IState> {
 				onMouseUp={this.onMouseUp}
 			>
 				<h1>Room</h1>
-				<Whiteboard data={paintData} />
+				<Whiteboard data={this.paintMemory} />
 			</div>
 		);
 	}
